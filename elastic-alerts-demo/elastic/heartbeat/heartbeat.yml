@@ -1,0 +1,52 @@
+heartbeat.monitors:
+
+  - type: http
+    id: frontend-http
+    name: "Frontend :3000"
+    urls: ["http://frontend:80"]
+    schedule: "@every 10s"
+    check.response.status: [200]
+    tags: ["demo", "frontend"]
+
+  - type: http
+    id: backend-http
+    name: "Backend API :3001"
+    urls: ["http://backend:3001/health"]
+    schedule: "@every 10s"
+    check.response.status: [200]
+    check.response.body: ["ok"]
+    tags: ["demo", "backend"]
+
+  - type: tcp
+    id: postgres-tcp
+    name: "PostgreSQL :5432"
+    hosts: ["db:5432"]
+    schedule: "@every 10s"
+    tags: ["demo", "database"]
+
+  - type: http
+    id: elasticsearch-http
+    name: "Elasticsearch :9200"
+    urls: ["http://elasticsearch:9200/_cluster/health"]
+    schedule: "@every 15s"
+    check.response.status: [200]
+    tags: ["elastic", "infra"]
+
+  - type: http
+    id: kibana-http
+    name: "Kibana :5601"
+    urls: ["http://kibana:5601/api/status"]
+    schedule: "@every 15s"
+    check.response.status: [200]
+    tags: ["elastic", "infra"]
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+
+setup.kibana:
+  host: "http://kibana:5601"
+
+setup.dashboards.enabled: false
+setup.ilm.enabled: true
+
+logging.level: info
